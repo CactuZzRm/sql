@@ -91,3 +91,12 @@ where o.id = 1
 2)
 INSERT INTO `shop`.`orders` (`FIO_customer`, `delivery_address`, `courier_id`) VALUES ('Игнат', 'Зортова', '2');
 INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('3', '6', '3');
+
+3)
+SELECT o.FIO_customer, o.delivery_address
+FROM shop.orders as o
+
+join shop.couriers as c
+on o.courier_id = c.id
+
+where c.id = 3
