@@ -1,66 +1,102 @@
-create database shop; #создание бд магазин
+CREATE TABLE `shop`.`products` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `cost` DECIMAL(7,2) NULL,
+  PRIMARY KEY (`id`));
+  
+CREATE TABLE `shop`.`couriers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `phoneNumber` VARCHAR(20) NOT NULL,
+  `carBrand` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`));
 
-create table shop.product ( 
-	Id int not null AUTO_INCREMENT,
-	name VARCHAR(20),
-	price int,
-    primary key (Id)
-);     #создание таблицы продуктов 
+CREATE TABLE `shop`.`orders` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `FIO_customer` VARCHAR(45) NOT NULL,
+  `delivery_address` VARCHAR(45) NOT NULL,
+  `courier_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `orders_couriers_idx` (`courier_id` ASC) VISIBLE,
+  CONSTRAINT `orders_couriers`
+    FOREIGN KEY (`courier_id`)
+    REFERENCES `shop`.`couriers` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+CREATE TABLE `shop`.`order_items` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `product_id` INT NOT NULL,
+  `order_id` INT NOT NULL,
+  `amount` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `products_order_items_idx` (`product_id` ASC) VISIBLE,
+  INDEX `orders_order_items_idx` (`order_id` ASC) VISIBLE,
+  CONSTRAINT `products_order_items`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `shop`.`products` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `orders_order_items`
+    FOREIGN KEY (`order_id`)
+    REFERENCES `shop`.`orders` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+INSERT INTO `shop`.`products` (`name`, `cost`) VALUES ('Растишка', '90');
+INSERT INTO `shop`.`products` (`name`, `cost`) VALUES ('Меч', '50');
+INSERT INTO `shop`.`products` (`name`, `cost`) VALUES ('Торт', '800');
+INSERT INTO `shop`.`products` (`name`, `cost`) VALUES ('Круасан', '70');
+INSERT INTO `shop`.`products` (`name`, `cost`) VALUES ('Картошка фри', '150');
 
-create table shop.order ( 
-	Id INT not null AUTO_INCREMENT,
-	firstName VARCHAR(20),
-    lastName VARCHAR(20),
-	address VARCHAR(20),
-    cntProduct int ,
-	courier_id INT,
-	product_id INT,
-    primary key (Id)
-);     #создание таблицы заказов 
+INSERT INTO `shop`.`couriers` (`name`, `phoneNumber`, `carBrand`) VALUES ('Джамшут', '+79999999999', 'Жигули');
+INSERT INTO `shop`.`couriers` (`name`, `phoneNumber`, `carBrand`) VALUES ('Вова', '+75555555555', 'Приора');
+INSERT INTO `shop`.`couriers` (`name`, `phoneNumber`, `carBrand`) VALUES ('Эрик', '+78888888888', 'Мерседес');
 
-create table shop.courier ( 
-	Id INT not null AUTO_INCREMENT,
-	firstName VARCHAR(20),
-    lastName VARCHAR(20),
-    number INT,
-    markCar INT,
-    primary key (Id)
-);     #создание таблицы курьера
+INSERT INTO `shop`.`orders` (`FIO_customer`, `delivery_address`, `courier_id`) VALUES ('Иосиф', 'Московская', '3');
+INSERT INTO `shop`.`orders` (`FIO_customer`, `delivery_address`, `courier_id`) VALUES ('Рамиль', 'Цоколаева', '2');
+INSERT INTO `shop`.`orders` (`FIO_customer`, `delivery_address`, `courier_id`) VALUES ('Лана', 'Леваневского', '1');
+INSERT INTO `shop`.`orders` (`FIO_customer`, `delivery_address`, `courier_id`) VALUES ('Вероника', 'Киевская', '3');
+INSERT INTO `shop`.`orders` (`FIO_customer`, `delivery_address`, `courier_id`) VALUES ('Роза', 'Шмулевича', '3');
 
-insert into shop.product ( name,price) values ("велосипед", 1000); 
-insert into shop.product (name,price) values ("веер", 100); 
-insert into shop.product (name,price) values ("утюг", 10000); 
-insert into shop.product (name,price) values ("слон", 1004000); 
-insert into shop.product (name,price) values ("верблюд", 44000);   #заполнение таблицы продуктов 
-
-insert into shop.order ( firstName,lastName, address, courier_id, product_id) values ("Ramil", "Mamedov", "Zortova 5",1,2); 
-insert into shop.order ( firstName,lastName, address, courier_id, product_id) values ("Ramil", "Mamedov", "Zortova 5",2,3); 
-insert into shop.order (firstName,lastName, address, courier_id, product_id) values ("Ramil", "Mamedov", "Zortova 5", 1, 3); 
-insert into shop.order ( firstName,lastName, address, courier_id, product_id) values ("Ramil", "Mamedov", "Zortova 5",2 ,2 ); 
-insert into shop.order ( firstName,lastName, address, courier_id, product_id) values ("Ramil", "Mamedov", "Zortova 5",3,3);  #заполнение таблицы заказов 
-
-insert into shop.courier ( firstName,lastName, number,markCar) values ("Ramil", "Mamedov", 30003000, 300); 
-insert into shop.courier ( firstName,lastName, number,markCar) values ("Ramil", "Mamedov", 30003000, 300); 
-insert into shop.courier ( firstName,lastName, number,markCar) values ("Ramil", "Mamedov", 30003000, 300); #заполнение таблицы курьер 
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('1', '1', '1');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('4', '1', '1');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('3', '1', '1');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('2', '2', '1');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('3', '2', '1');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('4', '2', '1');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('1', '3', '6');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('2', '3', '1');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('1', '4', '1');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('5', '4', '3');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('2', '5', '2');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('1', '5', '1');
 
 1)
+SELECT o.fio_customer, o.delivery_address, c.name, p.name, p.cost, oi.amount, p.cost * oi.amount as Sum
+FROM shop.orders as o
 
-select l.name , g.firstName , g.lastName , s.address , l.price ,s.cntProduct
-from shop.order as s
+join shop.couriers as c
+on o.courier_id = c.id
 
-inner join shop.courier as g
-on g.id = s.courier_id
+join shop.order_items as oi
+on o.id = oi.order_id
 
-inner join shop.product as l
-on l.id = s.product_id
+join shop.products as p
+on p.id = oi.product_id
+
+where o.id = 1
+
 
 2)
-
-insert into shop.order ( firstName,lastName, address, courier_id, product_id) values ("Ramil", "Mamedov", "Zortova 5",1,2); 
+INSERT INTO `shop`.`orders` (`FIO_customer`, `delivery_address`, `courier_id`) VALUES ('Игнат', 'Зортова', '2');
+INSERT INTO `shop`.`order_items` (`product_id`, `order_id`, `amount`) VALUES ('3', '6', '3');
 
 3)
-select s.firstName, s.lastName, s.address  
-from shop.order as s
+SELECT o.FIO_customer, o.delivery_address
+FROM shop.orders as o
 
-inner join shop.courier as g
-on g.id = s.courier_id
+join shop.couriers as c
+on o.courier_id = c.id
+
+where c.id = 3
